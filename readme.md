@@ -1,0 +1,1 @@
+# TYPO3 with PHP-FPM and nginx
