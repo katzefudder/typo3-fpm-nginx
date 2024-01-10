@@ -11,6 +11,9 @@ services:
         depends_on:
           - mysql
         restart: always
+        volumes:
+          - "./typo3/typo3conf:/var/www/typo3conf"
+          #- "./typo3/typo3conf/LocalConfiguration.php:/var/www/typo3conf/LocalConfiguration.php"
         ports:
           - "80:80"
         networks:
@@ -24,6 +27,19 @@ services:
       environment:
         - "MYSQL_ALLOW_EMPTY_PASSWORD=true"
         - "MYSQL_DATABASE=typo3"
+      networks:
+        - php-net
+
+    mysql-init:
+      image: mysql:8.0
+      depends_on:
+        - mysql
+      environment:
+        - "MYSQL_ALLOW_EMPTY_PASSWORD=true"
+        - "MYSQL_DATABASE=typo3"
+      volumes:
+        - "./typo3/typo3.sql:/tmp/typo3.sql" # admin & a1234sdf
+      entrypoint: [ "bash", "-c", "sleep 10 && mysql --user=root --host=mysql --port=3306 typo3 < /tmp/typo3.sql && exit"]
       networks:
         - php-net
 
